@@ -57,7 +57,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
 		KERNELPATCHLEVEL="$(cat $KERNEL_PATH/Makefile | grep PATCHLEVEL | head -n 1 | sed "s|.*=||1" | sed "s| ||g")"
 		KERNELSUBLEVEL="$(cat $KERNEL_PATH/Makefile | grep SUBLEVEL | head -n 1 | sed "s|.*=||1" | sed "s| ||g")"
 		REVISION=v$KERNELVERSION.$KERNELPATCHLEVEL.$KERNELSUBLEVEL
-		ZIPNAME=""$REVISION"-CheeseCream-RedmiNote8-$(date '+%Y%m%d-%H%M').zip"
+		ZIPNAME=""$REVISION"-Droidian-RedmiNote8-$(date '+%Y%m%d-%H%M').zip"
 		echo -e ""
 		echo -e ""
 		echo -e "********************************************"
@@ -67,7 +67,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
 		echo -e ""
 	if [ -d "$AK3_DIR" ]; then
 		cp -r $AK3_DIR AnyKernel3
-	elif ! git clone -q https://github.com/ghostrider-reborn/AnyKernel3 ; then
+	elif ! git clone -q https://github.com/David112x/AnyKernel3 ; then
 			echo -e "\nAnyKernel3 repo not found locally and couldn't clone from GitHub! Aborting..."
 	fi
 		cp $kernel $dtbo AnyKernel3
