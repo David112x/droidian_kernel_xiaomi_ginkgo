@@ -44,7 +44,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
 	echo -e "*****************************"
 	echo -e ""
 	echo -e ""
-	make -j$(( 2 * $(nproc --all))) O=out ARCH=arm64 CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=$GCC_64_DIR/bin/aarch64-linux-android- CROSS_COMPILE_ARM32=$GCC_32_DIR/bin/arm-linux-androideabi- CLANG_TRIPLE=aarch64-linux-gnu- Image.gz-dtb dtbo.img
+	make -j$(( 2 * $(nproc --all))) O=out ARCH=arm64 CC="ccache clang" LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=$GCC_64_DIR/bin/aarch64-linux-android- CROSS_COMPILE_ARM32=$GCC_32_DIR/bin/arm-linux-androideabi- CLANG_TRIPLE=aarch64-linux-gnu- Image.gz-dtb dtbo.img
 
 	kernel="out/arch/arm64/boot/Image.gz-dtb"
 	#dtb="arch/arm64/boot/dts/xiaomi/qcom-base/trinket.dtb"
@@ -71,7 +71,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
 			echo -e "\nAnyKernel3 repo not found locally and couldn't clone from GitHub! Aborting..."
 	fi
 		cp $kernel $dtbo AnyKernel3
-		cp $dtb AnyKernel3/dtb
+		#cp $dtb AnyKernel3/dtb
 		rm -rf out/arch/arm64/boot
 		cd AnyKernel3
 		#git checkout surya &> /dev/null
