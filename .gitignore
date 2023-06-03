@@ -132,3 +132,4 @@ Android.bp
 
 # Ignore a few folders
 out
+v4.14*Droidian*.zip
