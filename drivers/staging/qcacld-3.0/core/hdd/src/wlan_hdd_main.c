@@ -15588,7 +15588,6 @@ void hdd_init_start_completion(void)
 }
 
 static int hdd_driver_load(void);
-
 #if defined CFG80211_USER_HINT_CELL_BASE_SELF_MANAGED || \
                     (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 18, 0))
 static void hdd_inform_wifi_on(void)
@@ -15619,7 +15618,6 @@ static void hdd_inform_wifi_on(void)
 }
 #endif
 
->>>>>>> LA.UM.9.1.r1-12900-SMxxx0.QSSI13.0:core/hdd/src/wlan_hdd_main.c
 static ssize_t wlan_hdd_state_ctrl_param_write(struct file *filp,
 						const char __user *user_buf,
 						size_t count,
