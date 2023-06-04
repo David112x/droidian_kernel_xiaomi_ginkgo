@@ -16,7 +16,7 @@ export PATH="$TC_DIR/bin:$PATH"
 if [[ $1 = "-t" || $1 = "--tools" ]]; then
 	git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 $HOME/tc/aarch64-linux-android-4.9
 	git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 $HOME/tc/arm-linux-androideabi-4.9
-        wget https://gitlab.com/David112x/clang/-/archive/12.0.0/clang-12.0.0.tar.gz -O $HOME/tc/clang-14.0.0.tar.gz && tar xvf $HOME/tc/clang-14.0.0.tar.gz -C $HOME/tc/
+        wget https://gitlab.com/David112x/clang/-/archive/12.0.0/clang-12.0.0.tar.gz -O $HOME/tc/clang-12.0.0.tar.gz && tar xvf $HOME/tc/clang-12.0.0.tar.gz -C $HOME/tc/
 	touch $HOME/tc/clang-12.0.0/AndroidVersion.txt && echo -e "12.0.0" | sudo tee -a $HOME/tc/clang-12.0.0/AndroidVersion.txt > /dev/null 2>&1
 fi
 

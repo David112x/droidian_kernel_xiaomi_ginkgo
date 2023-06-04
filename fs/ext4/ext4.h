@@ -2404,6 +2404,12 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
 					      struct ext4_group_desc *gdp);
 ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
 
+static inline bool ext4_encrypted_inode(struct inode *inode)
+{
+	return ext4_test_inode_flag(inode, EXT4_INODE_ENCRYPT);
+}
+
+
 #ifdef CONFIG_UNICODE
 extern int ext4_fname_setup_ci_filename(struct inode *dir,
 					 const struct qstr *iname,
@@ -2538,7 +2544,8 @@ void ext4_insert_dentry(struct inode *dir, struct inode *inode,
 			struct ext4_filename *fname);
 static inline void ext4_update_dx_flag(struct inode *inode)
 {
-	if (!ext4_has_feature_dir_index(inode->i_sb)) {
+	if (!ext4_has_feature_dir_index(inode->i_sb) &&
+	    ext4_test_inode_flag(inode, EXT4_INODE_INDEX)) {
 		/* ext4_iget() should have caught this... */
 		WARN_ON_ONCE(ext4_has_feature_metadata_csum(inode->i_sb));
 		ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
