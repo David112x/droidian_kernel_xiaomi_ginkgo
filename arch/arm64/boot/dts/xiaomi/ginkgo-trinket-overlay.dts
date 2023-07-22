@@ -19,7 +19,7 @@
 #include "ginkgo/ginkgo-trinket.dtsi"
 
 / {
-	model = "IDP";
+	model = "Qualcomm Technologies, Inc. SM6125";
 	compatible = "qcom,trinket-idp", "qcom,trinket", "qcom,idp";
 	qcom,msm-id = <394 0x10000>;
 	qcom,board-id = <34 0>;
