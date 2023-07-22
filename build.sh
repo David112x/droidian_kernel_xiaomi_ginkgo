@@ -1,16 +1,24 @@
 
 #!/bin/bash
 #
-# Compile script for Deluxe Kernel (DEXK)
-# Copyright (C)2022 Ardany Jolón
+# Compile script for Linux (Droidian on the Redmi Note 8)
 SECONDS=0 # builtin bash timer
 KERNEL_PATH=$PWD
-TC_DIR="$HOME/tc/clang-12.0.0"
-GCC_64_DIR="$HOME/tc/aarch64-linux-android-4.9"
-GCC_32_DIR="$HOME/tc/arm-linux-androideabi-4.9"
-AK3_DIR="$HOME/tc/AnyKernel3"
+export TC_DIR="$HOME/tc/clang-12.0.0"
+export PATH="$TC_DIR:$PATH"
+#GCC_64_DIR="$HOME/tc/aarch64-linux-android-4.9"
+#GCC_32_DIR="$HOME/tc/arm-linux-androideabi-4.9"
+#AK3_DIR="$HOME/tc/AnyKernel3"
 DEFCONFIG="vendor/ginkgo-perf_defconfig"
 export PATH="$TC_DIR/bin:$PATH"
+# Detect if the system has SMT enabled or not.
+if [ "$(cat /sys/devices/system/cpu/smt/active)" = "1" ]; then
+		export THREADS=$(($(nproc --all) * 2))
+	else
+		export THREADS=$(nproc --all)
+	fi
+# Detect the amount of system memory.
+export SYSMEM="$(vmstat -s | grep -i 'total memory' | sed 's/ *//')"
 
 # Install needed tools
 if [[ $1 = "-t" || $1 = "--tools" ]]; then
@@ -33,21 +41,27 @@ if [[ $1 = "-c" || $1 = "--clean" ]]; then
 fi
 
 if [[ $1 = "-b" || $1 = "--build" ]]; then
+# Environment variables for the build.
+	#export CROSS_COMPILE=$GCC_64_DIR/bin/aarch64-linux-android-
+	#export CROSS_COMPILE_ARM32=$GCC_32_DIR/bin/arm-linux-androideabi-
+	export CLANG_TRIPLE=aarch64-linux-gnu-
+	export ARCH=arm64
+	export CROSS_COMPILE=aarch64-linux-gnu-
+	export LD_LIBRARY_PATH=$TC_DIR/lib
+	export KBUILD_BUILD_USER="David112x"
+	export KBUILD_BUILD_HOST="$(hostname)"
+	export USE_HOST_LEX=yes
 	mkdir -p out
-	make O=out ARCH=arm64 $DEFCONFIG
-	echo -e ""
-	echo -e ""
-	echo -e "*****************************"
-	echo -e "**                         **"
-	echo -e "** Starting compilation... **"
-	echo -e "**                         **"
-	echo -e "*****************************"
-	echo -e ""
-	echo -e ""
-	make -j$(( 2 * $(nproc --all))) O=out ARCH=arm64 CC="ccache clang" LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=$GCC_64_DIR/bin/aarch64-linux-android- CROSS_COMPILE_ARM32=$GCC_32_DIR/bin/arm-linux-androideabi- CLANG_TRIPLE=aarch64-linux-gnu- Image.gz-dtb dtbo.img
+# Make defconfig
+	make $DEFCONFIG -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=out
 
-	kernel="out/arch/arm64/boot/Image.gz-dtb"
-	#dtb="arch/arm64/boot/dts/xiaomi/qcom-base/trinket.dtb"
+# Make kernel
+	echo The system has $SYSMEM...
+	echo Using $THREADS jobs for this build...
+	make -j$THREADS O=out CC="ccache clang" LLVM=1 LD=ld.lld LLVM_IAS=1 AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip Image.gz dtbo.img
+
+	kernel="out/arch/arm64/boot/Image.gz"
+	dtb="arch/arm64/boot/dts/xiaomi/qcom-base/trinket.dtb"
 	dtbo="out/arch/arm64/boot/dtbo.img"
 
 	if [ -f "$kernel" ] && [ -f "$dtbo" ]; then
