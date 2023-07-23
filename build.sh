@@ -4,7 +4,7 @@
 # Compile script for Linux (Droidian on the Redmi Note 8)
 SECONDS=0 # builtin bash timer
 KERNEL_PATH=$PWD
-export TC_DIR="$HOME/tc/clang-12.0.0"
+export TC_DIR="$HOME/tc/clang-14.0.0"
 export PATH="$TC_DIR:$PATH"
 #GCC_64_DIR="$HOME/tc/aarch64-linux-android-4.9"
 #GCC_32_DIR="$HOME/tc/arm-linux-androideabi-4.9"
@@ -24,8 +24,8 @@ export SYSMEM="$(vmstat -s | grep -i 'total memory' | sed 's/ *//')"
 if [[ $1 = "-t" || $1 = "--tools" ]]; then
 	git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 $HOME/tc/aarch64-linux-android-4.9
 	git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 $HOME/tc/arm-linux-androideabi-4.9
-        wget https://gitlab.com/David112x/clang/-/archive/12.0.0/clang-12.0.0.tar.gz -O $HOME/tc/clang-12.0.0.tar.gz && tar xvf $HOME/tc/clang-12.0.0.tar.gz -C $HOME/tc/
-	touch $HOME/tc/clang-12.0.0/AndroidVersion.txt && echo -e "12.0.0" | sudo tee -a $HOME/tc/clang-12.0.0/AndroidVersion.txt > /dev/null 2>&1
+        wget https://gitlab.com/David112x/clang/-/archive/14.0.0/clang-14.0.0.tar.gz -O $HOME/tc/clang-14.0.0.tar.gz && tar xvf $HOME/tc/clang-14.0.0.tar.gz -C $HOME/tc/
+	touch $HOME/tc/clang-14.0.0/AndroidVersion.txt && echo -e "14.0.0" | sudo tee -a $HOME/tc/clang-14.0.0/AndroidVersion.txt > /dev/null 2>&1
 fi
 
 # Regenerate defconfig file
@@ -58,7 +58,7 @@ if [[ $1 = "-b" || $1 = "--build" ]]; then
 # Make kernel
 	echo The system has $SYSMEM...
 	echo Using $THREADS jobs for this build...
-	make -j$THREADS O=out CC="ccache clang" LLVM=1 LD=ld.lld LLVM_IAS=1 AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip Image.gz dtbo.img
+	make -j$THREADS O=out CC="ccache clang -Qunused-arguments -fcolor-diagnostics" LLVM=1 LD=ld.lld LLVM_IAS=1 AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip Image.gz dtbo.img
 
 	kernel="out/arch/arm64/boot/Image.gz"
 	dtb="arch/arm64/boot/dts/xiaomi/qcom-base/trinket.dtb"
